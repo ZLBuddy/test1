@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>标题</title>
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<style>
+		#box{
+			width: 420px;
+			height: 420px;
+			border: 1px solid #666;
+			background: #ccc;
+			margin: 20px auto;
+		}
+	</style>
+</head>
+<body>
+	<div id="box">
+		<canvas id="cvs"width="420"height="420"></canvas>
+	</div>
+	<script>
+		var cvs=document.getElementById('cvs');
+		var ctx=cvs.getContext("2d");
+		function clock(){
+			//1、获取当前时间及指针角度计算初值
+			var time=new Date();
+			var h=time.getHours();
+			var m=time.getMinutes();
+			var s=time.getSeconds();
+			h>11?h-12:h;
+			h=h+(m/60);
+			m=m+(s/60);
+
+			//2、切割圆形
+			ctx.beginPath();
+			ctx.arc(210,210,200,0,2*Math.PI,false);
+			ctx.clip();
+			ctx.closePath();
+
+			//画背景图片
+			var img=new Image();
+			img.src="1.jpg";
+			img.onload=function(){
+				ctx.drawImage(img,0,0,420,420);
+				//画表的边界线
+				ctx.beginPath();
+				ctx.arc(210,210,200,0,2*Math.PI,false);
+				ctx.strokeStyle="#666";
+				ctx.lineWidth=10;
+				ctx.stroke();
+				//画分刻度
+				for (var i=0;i<60;i++){
+					ctx.save();//保存当前绘制状态
+					ctx.beginPath();
+					ctx.translate(210,210);
+					ctx.rotate(i*6*Math.PI/180);
+					ctx.moveTo(0,-185);
+					ctx.lineTo(0,-195);
+					ctx.strokeStyle="#999";
+					ctx.lineWidth=5;
+					ctx.stroke();
+					ctx.closePath();
+					ctx.restore();
+				}
+				//画时刻度 360/12=30
+				for (var i=0;i<12;i++){
+					ctx.save();//保存当前绘制状态
+					ctx.beginPath();
+					ctx.translate(210,210);
+					ctx.rotate(i*30*Math.PI/180);
+					ctx.moveTo(0,-175);
+					ctx.lineTo(0,-195);
+					ctx.strokeStyle="#999";
+					ctx.lineWidth=8;
+					ctx.stroke();
+					ctx.closePath();
+					ctx.restore();
+				}
+				//画时针
+				ctx.save();
+				ctx.beginPath();
+				ctx.translate(210,210);
+				ctx.rotate(h*30*Math.PI/180);
+				ctx.moveTo(0,12);
+				ctx.lineTo(0,-120);
+				ctx.strokeStyle="#666";
+				ctx.lineWidth=8;
+				ctx.stroke();
+				ctx.closePath();
+				ctx.restore();
+
+				//画分针
+				ctx.save();
+				ctx.beginPath();
+				ctx.translate(210,210);
+				ctx.rotate(m*6*Math.PI/180);
+				ctx.moveTo(0,12);
+				ctx.lineTo(0,-150);
+				ctx.strokeStyle="#fff";
+				ctx.lineWidth=6;
+				ctx.stroke();
+				ctx.closePath();
+				ctx.restore();
+
+				//画秒针
+				ctx.save();
+				ctx.beginPath();
+				ctx.translate(210,210);
+				ctx.rotate(s*6*Math.PI/180);
+				ctx.moveTo(0,12);
+				ctx.lineTo(0,-170);
+				ctx.strokeStyle="gray";
+				ctx.lineWidth=3;
+				ctx.stroke();
+				ctx.closePath();
+				ctx.restore();
+				//画中心圆
+				ctx.beginPath();
+				ctx.arc(210,210,6,0,2*Math.PI,false);
+				ctx.strokeStyle="#fff";
+				ctx.lineWidth=6;
+				ctx.stroke();
+				ctx.fillStyle="#000";
+				ctx.fill();
+				ctx.closePath();
+				//指针圆
+				ctx.save();
+				ctx.beginPath();
+				ctx.translate(210,210);
+				ctx.rotate(s*6*Math.PI/180);
+				ctx.arc(0,-150,3,0,2*Math.PI,false);
+				ctx.strokeStyle="#000";
+				ctx.lineWidth=6;
+				ctx.stroke();
+				ctx.fillStyle="#fff";
+				ctx.fill();
+				ctx.closePath();
+				ctx.restore();
+			}
+		}
+		clock();
+		setInterval(clock,1000);
+	</script>
+</body>
+</html>
